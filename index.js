@@ -29,16 +29,16 @@ app.post('/login', (req, res) => {
     const { username, password } = req.body;
     
     // CONSULTA SQL VULNERÁVEL 🚨
-    const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+    const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
     
-    db.all(query, [], (err, rows) => {
+    db.all(query, [username, password], (err, rows) => {
         if (err) {
             return res.send('Erro no servidor');
         }
         if (rows.length > 0) {
             console.log('CONSULTA: ', query);
             console.log('RESULTADO:', rows);
-            return res.send(`Bem-vindo, ${username}! <br> Flag: VULCOM{SQLi_Exploit_Success}`);
+            return res.send(`Bem-vindo, ${rows[0].username}! <br> Flag: VULCOM{SQLi_Exploit_Success}`);
         } else {
             return res.send('Login falhou!');
         }
